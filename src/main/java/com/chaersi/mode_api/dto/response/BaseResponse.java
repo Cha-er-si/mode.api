@@ -1,0 +1,14 @@
+package com.chaersi.mode_api.dto.response;
+
+import com.chaersi.mode_api.entity.ErrorInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseResponse {
+    private int status;
+    private ErrorInfo error;
+}
