@@ -9,6 +9,7 @@ import com.chaersi.mode_api.repository.ApplicationRequestRepository;
 import com.chaersi.mode_api.security.JWTService;
 import com.chaersi.mode_api.service.AuthService;
 import com.chaersi.mode_api.util.ApplicationIDUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
     private final JWTService jwtService;
     private final ApplicationIDUtil applicationIDUtil;
     private final ApplicationRequestRepository applicationRequestRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public AuthResponse generateToken(AuthRequest authRequest) {
@@ -29,19 +31,24 @@ public class AuthServiceImpl implements AuthService {
 
         AuthResponse authResponse = AuthResponse
                 .builder()
+                .status(200)
                 .token(token)
                 .applicationId(applicationId)
                 .build();
 
-        applicationRequestRepository.save(
-                ApplicationRequest
-                        .builder()
-                        .applicationId(applicationId)
-                        .requestUrl("/api/v1/auth/token-generate")
-                        .responseBody(authResponse.toString())
-                        .requestBody(authRequest.toString())
-                        .build()
-        );
+        try{
+            applicationRequestRepository.save(
+                    ApplicationRequest
+                            .builder()
+                            .applicationId(applicationId)
+                            .requestUrl("/api/v1/auth/token-generate")
+                            .responseBody(objectMapper.writeValueAsString(authResponse))
+                            .requestBody(objectMapper.writeValueAsString(authRequest))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         return authResponse;
     }
