@@ -1,8 +1,11 @@
 package com.chaersi.mode_api.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -13,6 +16,6 @@ public class AuthRequestDTO {
     @NotBlank(message = "osVersion is required.")
     private String osVersion;
 
-    @NotBlank(message = "dateToday is required.")
-    private String dateToday;
+    @NotNull(message = "dateToday is required.")
+    private Date dateToday;
 }
