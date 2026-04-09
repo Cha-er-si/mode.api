@@ -1,7 +1,7 @@
 package com.chaersi.mode_api.service.impl;
 
 import ch.qos.logback.core.util.StringUtil;
-import com.chaersi.mode_api.dto.request.AuthRequest;
+import com.chaersi.mode_api.dto.request.AuthRequestDTO;
 import com.chaersi.mode_api.dto.response.AuthResponse;
 import com.chaersi.mode_api.entity.ApplicationRequest;
 import com.chaersi.mode_api.exception.CustomException;
@@ -22,12 +22,10 @@ public class AuthServiceImpl implements AuthService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public AuthResponse generateToken(AuthRequest authRequest) {
-        validateRequest(authRequest);
-
-        String token = jwtService.generateToken(authRequest);
-
+    public AuthResponse generateToken(AuthRequestDTO authRequestDTO) {
         String applicationId = applicationIDUtil.generateApplicationID();
+
+        String token = jwtService.generateToken(authRequestDTO, applicationId);
 
         AuthResponse authResponse = AuthResponse
                 .builder()
@@ -43,19 +41,13 @@ public class AuthServiceImpl implements AuthService {
                             .applicationId(applicationId)
                             .requestUrl("/api/v1/auth/token-generate")
                             .responseBody(objectMapper.writeValueAsString(authResponse))
-                            .requestBody(objectMapper.writeValueAsString(authRequest))
+                            .requestBody(objectMapper.writeValueAsString(authRequestDTO))
                             .build()
             );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
         }
 
         return authResponse;
-    }
-
-    private void validateRequest(AuthRequest authRequest) {
-        if(StringUtil.isNullOrEmpty(authRequest.getDeviceId())) {
-            throw new CustomException("Device ID Required");
-        }
     }
 }

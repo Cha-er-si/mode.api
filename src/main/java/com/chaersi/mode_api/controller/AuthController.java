@@ -1,8 +1,9 @@
 package com.chaersi.mode_api.controller;
 
-import com.chaersi.mode_api.dto.request.AuthRequest;
+import com.chaersi.mode_api.dto.request.AuthRequestDTO;
 import com.chaersi.mode_api.dto.response.AuthResponse;
 import com.chaersi.mode_api.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
-    @GetMapping("/token-generate")
-    public ResponseEntity<AuthResponse> generateToken(@RequestBody AuthRequest authRequest) {
-        AuthResponse authResponse = authService.generateToken(authRequest);
+    @PostMapping("/token-generate")
+    public ResponseEntity<AuthResponse> generateToken(@Valid @RequestBody AuthRequestDTO authRequestDTO) {
+        AuthResponse authResponse = authService.generateToken(authRequestDTO);
 
         return ResponseEntity.ok(authResponse);
     }
