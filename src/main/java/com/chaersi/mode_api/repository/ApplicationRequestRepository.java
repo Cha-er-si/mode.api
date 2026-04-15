@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ApplicationRequestRepository extends JpaRepository<ApplicationRequest, Long> {
-    @Query(value = "SELECT application_id FROM application_requests WHERE application_id LIKE CONCAT(:date, '%') ORDER BY application_id DESC LIMIT 1", nativeQuery = true)
-    Optional<String> findLastApplicationIdForDate(@Param("date") String datePrefix);
+    @Query(value = "SELECT application_id FROM application_requests WHERE application_id LIKE CONCAT(:stringId, :date, '%') ORDER BY RIGHT(application_id, 7) DESC LIMIT 1", nativeQuery = true)
+    Optional<String> findLastApplicationIdForDate(@Param("stringId") String businessCodePrefix, @Param("date") String datePrefix);
 }

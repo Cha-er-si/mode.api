@@ -16,6 +16,9 @@ public class AuthRequestDTO {
     @NotBlank(message = "osVersion is required.")
     private String osVersion;
 
+    @NotBlank(message = "businessCode is required.")
+    private String businessCode;
+
     @NotNull(message = "dateToday is required.")
     private Date dateToday;
 }

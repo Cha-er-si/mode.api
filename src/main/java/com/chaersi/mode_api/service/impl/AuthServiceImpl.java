@@ -23,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse generateToken(AuthRequestDTO authRequestDTO) {
-        String applicationId = applicationIDUtil.generateApplicationID();
+        String applicationId = applicationIDUtil.generateApplicationID(authRequestDTO.getBusinessCode());
 
         String token = jwtService.generateToken(authRequestDTO, applicationId);
 

@@ -1,5 +1,6 @@
 package com.chaersi.mode_api.util;
 
+import com.chaersi.mode_api.entity.BusinessCodes;
 import com.chaersi.mode_api.repository.ApplicationRequestRepository;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +17,15 @@ public class ApplicationIDUtil {
         this.applicationRequestRepository = requestRepository;
     }
 
-    public String generateApplicationID() {
+    public String generateApplicationID(String businessCode) {
+        String businessCodePrefix = BusinessCodes.findByKey(businessCode).getLabel();
         String datePrefix = LocalDate.now().format(DATE_FORMATTER);
-        Optional<String> lastIdOpt = applicationRequestRepository.findLastApplicationIdForDate(datePrefix);
+        Optional<String> lastIdOpt = applicationRequestRepository.findLastApplicationIdForDate(businessCodePrefix, datePrefix);
+        int substringIndex = businessCodePrefix.length() + datePrefix.length();
         long nextNumber = lastIdOpt
-                .map(id -> Long.parseLong(id.substring(8)) + 1) // take last 7 digits and increment
+                .map(id -> Long.parseLong(id.substring(substringIndex)) + 1) // take last 7 digits and increment
                 .orElse(1L);
 
-        return datePrefix + String.format("%07d", nextNumber);
+        return businessCodePrefix + datePrefix + String.format("%07d", nextNumber);
     }
 }
